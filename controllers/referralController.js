@@ -1,11 +1,10 @@
 const Referral = require('../models/Referral')
 const User = require('../models/User')
-const asyncHandler = require('express-async-handler')
 
 // @desc Get all referrals 
 // @route GET /referrals
 // @access Private
-const getAllReferrals = asyncHandler(async (req, res) => {
+const getAllReferrals = async (req, res) => {
     // Get all referrals from MongoDB
     const referrals = await Referral.find().lean()
 
@@ -23,12 +22,12 @@ const getAllReferrals = asyncHandler(async (req, res) => {
     }))
 
     res.json(referralWithUser)
-})
+}
 
 // @desc Create new referral
 // @route POST /referral
 // @access Private
-const createNewReferral = asyncHandler(async (req, res) => {
+const createNewReferral = async (req, res) => {
     const { user, title, text } = req.body
 
     // Confirm data
@@ -37,7 +36,7 @@ const createNewReferral = asyncHandler(async (req, res) => {
     }
 
     // Check for duplicate title
-    const duplicate = await Referral.findOne({ title }).lean().exec()
+    const duplicate = await Referral.findOne({ title }).collation({ locale: 'en', strength: 2 }).lean().exec()
 
     if (duplicate) {
         return res.status(409).json({ message: 'Duplicate referral title' })
@@ -52,12 +51,12 @@ const createNewReferral = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: 'Invalid referral data received' })
     }
 
-})
+}
 
 // @desc Update a referral
 // @route PATCH /referrals
 // @access Private
-const updateReferral = asyncHandler(async (req, res) => {
+const updateReferral = async (req, res) => {
     const { id, user, title, text, completed } = req.body
 
     // Confirm data
@@ -73,7 +72,7 @@ const updateReferral = asyncHandler(async (req, res) => {
     }
 
     // Check for duplicate title
-    const duplicate = await Referral.findOne({ title }).lean().exec()
+    const duplicate = await Referral.findOne({ title }).collation({ locale: 'en', strength: 2 }).lean().exec()
 
     // Allow renaming of the original referral 
     if (duplicate && duplicate?._id.toString() !== id) {
@@ -88,12 +87,12 @@ const updateReferral = asyncHandler(async (req, res) => {
     const updatedReferral = await referral.save()
 
     res.json(`'${updatedReferral.title}' updated`)
-})
+}
 
 // @desc Delete a referral
 // @route DELETE /referral
 // @access Private
-const deleteReferral = asyncHandler(async (req, res) => {
+const deleteReferral = async (req, res) => {
     const { id } = req.body
 
     // Confirm data
@@ -113,7 +112,7 @@ const deleteReferral = asyncHandler(async (req, res) => {
     const reply = `Referral '${result.title}' with ID ${result._id} deleted`
 
     res.json(reply)
-})
+}
 
 module.exports = {
     getAllReferrals,
