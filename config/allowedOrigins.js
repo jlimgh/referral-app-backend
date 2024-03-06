@@ -1,8 +1,6 @@
 const allowedOrigins = [
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'https://www.sellanycondition.com',
-    'https://sellanycondition.com'
+    // 'http://localhost:5173',
+    'https://referral-app-0fp1.onrender.com',
 ]
 
 module.exports = allowedOrigins
